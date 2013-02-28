@@ -19,6 +19,23 @@ inline std::vector<std::string> split(const std::string & str)
 	return substrings;
 }
 
+inline std::vector<std::string> split(const std::string & str, const std::string & splitter)
+{
+	using namespace std;
+	vector<std::string> substrings;
+	string::size_type start_pos = 0;
+	while (start_pos < str.size())
+	{
+		string::size_type end = str.find(splitter, start_pos);
+		if (end > start_pos)
+			substrings.push_back(str.substr(start_pos, end-start_pos));
+		if (end == string::npos)
+			break;
+		start_pos = end + splitter.size();
+	}
+	return substrings;
+}
+
 template<class T>
 void str2T(const string & str, T & n)
 {
