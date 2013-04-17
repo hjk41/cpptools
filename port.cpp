@@ -5,6 +5,8 @@
 #ifdef WINDOWS_PORT
 
 #include <Windows.h>
+#include <assert.h>
+#include <stdint.h>
 
 extern char * optarg = NULL;
 extern int optind = 0;
@@ -14,14 +16,24 @@ extern int optopt = 0;
 static timeval __start_time;
 static int __junk_value = gettimeofday(&__start_time, NULL);
 
+static timeval FileTime2TimeVal(FILETIME ft)
+{
+	ULARGE_INTEGER u;
+	u.HighPart = ft.dwHighDateTime;
+	u.LowPart = ft.dwLowDateTime;
+	timeval tv;
+	tv.tv_sec = u.QuadPart/10000000;
+	tv.tv_usec = (u.QuadPart%10000000)/10;
+	return tv;
+}
+
 int getrusage(int who, struct rusage * usage)
 {
-	timeval t2;
-	gettimeofday(&t2, NULL);
-	usage->ru_utime.tv_sec = t2.tv_sec - __start_time.tv_sec;
-	usage->ru_utime.tv_usec = t2.tv_usec - __start_time.tv_usec;
-	usage->ru_stime.tv_sec = 0;
-	usage->ru_stime.tv_usec = 0;
+	FILETIME ct, et, kt, ut;
+	BOOL r = GetProcessTimes(GetCurrentProcess(), &ct, &et, &kt, &ut);
+	assert(r);
+	usage->ru_stime = FileTime2TimeVal(kt);
+	usage->ru_utime = FileTime2TimeVal(ut);
 	return 0;
 }
 
@@ -35,6 +47,16 @@ int gettimeofday(struct timeval * tv, struct timezone * tz)
 	tv->tv_sec = (time_t)dt;
 	tv->tv_usec = (dt - tv->tv_sec) * 1000000;
 	return 0;
+}
+
+double gettime()
+{
+	LARGE_INTEGER t;
+	::QueryPerformanceCounter(&t);
+	LARGE_INTEGER f;
+	::QueryPerformanceFrequency(&f);
+	double dt = (double)(t.QuadPart/f.QuadPart);
+	return dt;
 }
 
 int getopt(int argc, char * const argv[], const char *optstring)

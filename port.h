@@ -16,6 +16,9 @@
 #undef __func__
 #define __func__ __FUNCTION__
 
+#define portable_fseek _fseeki64
+#define portable_ftell _ftelli64
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -80,6 +83,8 @@ long int lrand48(void);
 
 double drand48(void);
 
+double gettime();
+
 #ifdef __cplusplus
 }
 #endif
@@ -89,7 +94,11 @@ double drand48(void);
 #include <sys/time.h>
 #include <unistd.h>
 #include <sys/resource.h>
+#include <stdio.h>
 #define myinline inline
+
+#define portable_fseek fseek
+#define portable_ftell ftell
 
 #endif
 
