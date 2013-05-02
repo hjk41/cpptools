@@ -42,7 +42,5 @@ long int lrand48(void)
 
 double drand48(void)
 {
-	double r = 0;
-	r = (double)(rand() & 0xFFFF)/0xFFFF;
-	return 0;
+	return (double)rand()/RAND_MAX;
 }
