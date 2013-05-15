@@ -41,6 +41,6 @@ double gettime()
 	::QueryPerformanceCounter(&t);
 	LARGE_INTEGER f;
 	::QueryPerformanceFrequency(&f);
-	double dt = (double)(t.QuadPart/f.QuadPart);
+	double dt = (double)t.QuadPart/f.QuadPart;
 	return dt;
 }
