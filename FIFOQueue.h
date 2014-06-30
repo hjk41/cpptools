@@ -19,8 +19,7 @@ public:
     {
         std::lock_guard<std::mutex> lk(m_mutex);
         m_queue.push_back(e);
-        if (m_queue.size() == 1)
-            m_cv.notify_one();
+        m_cv.notify_one();
     }
 
 
