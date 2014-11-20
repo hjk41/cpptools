@@ -37,8 +37,39 @@ inline std::vector<std::string> split(const std::string & str, const std::string
 }
 
 template<class T>
+class String2Type
+{
+public:
+    static void Get(const string & str, T & n)
+    {
+        /*istringstream iss(str);
+        iss >> n;*/
+        assert(0);
+    }
+};
+
+template<>
+class String2Type<uint64_t>
+{
+public:
+    static void Get(const string & str, uint64_t & n)
+    {
+        sscanf_s(str.c_str(), "%llu", &n);
+    }
+};
+
+template<>
+class String2Type<int>
+{
+public:
+    static void Get(const string & str, int & n)
+    {
+        sscanf_s(str.c_str(), "%d", &n);
+    }
+};
+
+template<class T>
 void str2T(const string & str, T & n)
 {
-	istringstream iss(str);
-	iss>>n;
+    String2Type<T>::Get(str, n);
 };
