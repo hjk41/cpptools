@@ -6,7 +6,16 @@
 #include <chrono>
 #include <thread>
 
-
+inline string strip(const std::string & str, char c) {
+    string ret;
+    ret.reserve(str.size());
+    int i = 0;
+    while (str[i] == c) i++;
+    int j = str.size() - 1;
+    while (str[j] == c) j--;
+    ret.assign(str.data() + i, str.data() + j + 1);
+    return ret;
+}
 
 inline std::string to_lower(const std::string & str1)
 {
