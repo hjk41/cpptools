@@ -1,7 +1,9 @@
 #include <algorithm>
+#include <cctype>
 #include <chrono>
 #include <cstdint>
 #include <iterator>
+#include <locale>
 #include <sstream>
 #include <string>
 #include <thread>
@@ -12,7 +14,7 @@ inline std::string strip(const std::string & str, char c) {
 	ret.reserve(str.size());
 	int i = 0;
 	while (str[i] == c) i++;
-	int j = str.size() - 1;
+	size_t j = str.size() - 1;
 	while (str[j] == c) j--;
 	ret.assign(str.data() + i, str.data() + j + 1);
 	return ret;
@@ -20,8 +22,10 @@ inline std::string strip(const std::string & str, char c) {
 
 inline std::string to_lower(const std::string & str1)
 {
-	std::string str = str1;
-	std::transform(str.begin(), str.end(), str.begin(), tolower);
+	std::string str(str1);
+	for (auto & c : str) {
+		c = tolower(c);
+	}
 	return str;
 }
 
@@ -59,9 +63,8 @@ class String2Type
 public:
 	static void Get(const std::string & str, T & n)
 	{
-		/*istringstream iss(str);
-		iss >> n;*/
-		assert(0);
+		istringstream iss(str);
+		iss >> n;
 	}
 };
 
@@ -71,7 +74,11 @@ class String2Type<uint64_t>
 public:
 	static void Get(const std::string & str, uint64_t & n)
 	{
+#ifdef WIN32
 		sscanf_s(str.c_str(), "%llu", &n);
+#else
+		sscanf(str.c_str(), "%llu", &n);
+#endif
 	}
 };
 
@@ -81,7 +88,11 @@ class String2Type<int>
 public:
 	static void Get(const std::string & str, int & n)
 	{
+#ifdef WIN32
 		sscanf_s(str.c_str(), "%d", &n);
+#else
+		sscanf(str.c_str(), "%d", &n);
+#endif
 	}
 };
 
