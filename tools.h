@@ -63,7 +63,7 @@ class String2Type
 public:
 	static void Get(const std::string & str, T & n)
 	{
-		istringstream iss(str);
+		std::istringstream iss(str);
 		iss >> n;
 	}
 };
@@ -121,14 +121,14 @@ inline std::istream & istream_read(std::istream & is, T & v)
 	return is;
 }
 
-inline double get_time()
+inline double my_get_time()
 {
 	using namespace std::chrono;
 	high_resolution_clock::duration tp = high_resolution_clock::now().time_since_epoch();
 	return (double)tp.count() * high_resolution_clock::period::num / high_resolution_clock::period::den;
 }
 
-inline void sleep_us(uint64_t us)
+inline void my_sleep_us(uint64_t us)
 {
 	std::this_thread::sleep_for(std::chrono::microseconds(us));
 }
